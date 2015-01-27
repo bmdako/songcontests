@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      socket.emit('join', 'mgp2015');
+      socket.on('nowplaying', function (msg) {
+        console.log('nowplaying', msg);
+      });
+    </script>
+    <title>MGP 2015</title>
+  </head>
+  <body>
+  </body>
+</html>
