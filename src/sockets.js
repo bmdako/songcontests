@@ -31,32 +31,17 @@ module.exports.register = function (plugin, options, next) {
       socket.leave(room);
     });
 
-    socket.on('like', function (msg, callback) {
-      console.log('vote', msg);
+    socket.on('like', function (msg) {
+      console.log('like vote', msg);
       // TODO: SQL upsert to likes
-      castVote(msg.event, msg.song, msg.session, 0, function(message) {
-        console.log('message', message);
-      });
-      io.sockets.to('mgp2015').emit('newrating', {
-        song: msg.song,
-        event: msg.event,
-        likes: ++likes,
-        dislikes: dislikes
-      });
+      castVote(msg.event, msg.song, msg.session, 0);
+
     });
 
     socket.on('dislike', function (msg) {
-      console.log('vote', msg);
+      console.log('dislike vote', msg);
       // TODO: SQL upsert to dislikes
-      castVote(msg.event, msg.song, msg.session, 1, function(message) {
-        console.log('message', message);
-      });
-      io.sockets.to('mgp2015').emit('newrating', {
-        song: msg.song,
-        event: msg.event,
-        likes: likes,
-        dislikes: ++dislikes
-      });
+      castVote(msg.event, msg.song, msg.session, 1);
     });
   });
 
@@ -75,7 +60,24 @@ module.exports.register.attributes = {
   version: '1.0.0'
 };
 
-function castVote(event_id, song_id, token, vote, callback) {
+function getSongVotes(event_id, song_id, callback) {
+  var sql = [
+    "SELECT SUM(dislike=0) AS likes, SUM(dislike=1) AS dislikes, COUNT(*) AS total",
+    "FROM likes",
+    "WHERE event_id = ", mysql.escape(event_id), " AND song_id = ", mysql.escape(song_id),
+    "GROUP BY event_id, song_id"
+  ].join(' ');
+
+  mysql.queryOne(sql, function(err, result) {
+    if(result) {
+      result.song = song_id;
+      result.event = event_id;
+      callback(result);
+    }
+  });
+}
+
+function castVote(event_id, song_id, token, vote) {
   var canvotesql = [
    ' SELECT true',
     'FROM song_event se',
@@ -84,9 +86,8 @@ function castVote(event_id, song_id, token, vote, callback) {
     'WHERE se.event_id =' +  mysql.escape(event_id) + ' AND se.song_id = ' + mysql.escape(song_id)
   ].join(' ');
 
-  mysql.queryOne(canvotesql, function(error, result) {
+  mysql.queryOne(canvotesql, function(err, result) {
     if (!result) {
-      callback('no dice!');
       return;
     }
 
@@ -98,8 +99,17 @@ function castVote(event_id, song_id, token, vote, callback) {
       'ON DUPLICATE KEY UPDATE',
       'dislike = ', mysql.escape(vote)
     ].join(' ');
+
     mysql.query(sql, function(err, result) {
-      callback(result);
+      if(!result) {
+        return;
+      }
+
+      getSongVotes(event_id,song_id, function(msg) {
+        if(msg) {
+          io.sockets.to('mgp2015').emit('newrating', msg);
+        }
+      });
     });
   });
 }
