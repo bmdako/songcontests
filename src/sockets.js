@@ -25,11 +25,11 @@ module.exports.register = function (plugin, options, next) {
     });
 
     socket.on('leave', function (room) {
-      console.log('leave');
-      socket.join(room);
+      console.log('leave', room);
+      socket.leave(room);
     });
 
-    socket.on('upvote', function (msg) {
+    socket.on('upvote', function (msg, callback) {
       console.log('vote', msg);
     });
 

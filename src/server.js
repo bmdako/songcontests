@@ -31,6 +31,16 @@ server.route({
    }
 });
 
+server.route({
+  method: 'GET',
+  path: '/admin/{param*}',
+  handler: {
+    directory: {
+      path: 'src/admin',
+      index: false
+    }
+  }
+});
 
 if (!module.parent) {
   server.start(function () {

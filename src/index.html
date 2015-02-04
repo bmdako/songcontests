@@ -8,9 +8,27 @@
       socket.on('nowplaying', function (msg) {
         console.log('nowplaying', msg);
       });
+
+      socket.emit('upvote', 1, function (msg) {
+        console.log(msg);
+      });
     </script>
     <title>MGP 2015</title>
   </head>
   <body>
+    <h1>Usage</h1>
+    <p>
+      <pre>
+        var socket = io();
+        socket.emit('join', 'mgp2015');
+        socket.on('nowplaying', function (msg) {
+          console.log('nowplaying', msg);
+        });
+
+        socket.emit('upvote', 1, function (msg) {
+
+        });
+      </pre>
+    </p>
   </body>
 </html>

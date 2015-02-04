@@ -38,23 +38,28 @@ var songs =
     order: 1,
     berlingske_review: '',
     berlingske_rating: 0,
+    status: 'active',
     artist: 'Tina & Rene',
     description: '',
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/tina_%26_rene%CC%81.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 2,
     title: 'Suitcase',
     order: 2,
     berlingske_review: '',
     berlingske_rating: 0,
-    status: 'active',
+    status: 'pending',
     artist: 'Anne Gadegaard',
     description: '',
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/anne_gadegaard.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 3,
     title: 'Manja',
@@ -67,6 +72,8 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/babou.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 4,
     title: 'Hotel A',
@@ -79,6 +86,8 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/cecilie_alexandra.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 5,
     title: 'The Way You Are',
@@ -91,6 +100,8 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/anti_social_media.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 6,
     title: 'Tæt På Mine Drømme',
@@ -103,6 +114,8 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/julie_bjerre.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 7,
     title: 'Love Is Love',
@@ -115,6 +128,8 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/andy_roda.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 8,
     title: 'Love Me Love Me',
@@ -127,6 +142,8 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/sara_sukurani.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 9,
     title: '(Ukendt titel)',
@@ -139,6 +156,8 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/marcel_%26_soulman_group.jpeg',
+    likes: 0,
+    dislikes: 0
   },{
     id: 10,
     title: 'Summer Without You',
@@ -151,11 +170,14 @@ var songs =
     country: '',
     flag: '',
     image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/world_of_girls.jpeg',
+    likes: 0,
+    dislikes: 0
   }
 ];
 
 var mgp2015 = {
-  id: 'mgp2015',
+  id: 0,
+  key: 'mgp2015',
   name: 'Melodi Grand Prix 2015',
   description: '',
   status: 'active',
