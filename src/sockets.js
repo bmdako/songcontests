@@ -11,7 +11,7 @@ module.exports.register = function (plugin, options, next) {
   io = SocketIO.listen(plugin.listener);
 
   io.sockets.on('connection', function (socket) {
-    console.log('New connection')
+    console.log('New connection. Connection count:', connections);
     ++connections;
 
     socket.on('disconnect', function () {

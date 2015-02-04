@@ -9,6 +9,9 @@ module.exports.register = function (plugin, options, next) {
     path: '/',
     handler: function (request, reply) {
       reply().code(501);
+    },
+    config: {
+      cors: true
     }
   });
 
@@ -16,10 +19,14 @@ module.exports.register = function (plugin, options, next) {
     method: 'GET',
     path: '/{event}',
     handler: function (request, reply) {
-      if (request.params.event === 'mgp2015')
-        reply(mgp2015);
-      else
-        reply().code(404);
+      selectEvent(request.params.event, function (err, result) {
+        if (err) reply().code(500);
+        else if (result === null) reply().code(404);
+        else reply(result);
+      });
+    },
+    config: {
+      cors: true
     }
   });
 };
@@ -29,159 +36,33 @@ module.exports.register.attributes = {
     version: '1.0.0'
 };
 
+function selectEvent(ident, callback) {
 
-var songs =
-[
-  {
-    id: 1,
-    title: 'Mi Amore',
-    order: 1,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'active',
-    artist: 'Tina & Rene',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/tina_%26_rene%CC%81.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 2,
-    title: 'Suitcase',
-    order: 2,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Anne Gadegaard',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/anne_gadegaard.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 3,
-    title: 'Manja',
-    order: 3,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Babou',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/babou.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 4,
-    title: 'Hotel A',
-    order: 4,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Cecilie Alexandra',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/cecilie_alexandra.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 5,
-    title: 'The Way You Are',
-    order: 5,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Anti Social Media',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/anti_social_media.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 6,
-    title: 'Tæt På Mine Drømme',
-    order: 6,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Julie Bjerre',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/julie_bjerre.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 7,
-    title: 'Love Is Love',
-    order: 7,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Andy Roda',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/andy_roda.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 8,
-    title: 'Love Me Love Me',
-    order: 8,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Sara Sukurani',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/sara_sukurani.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 9,
-    title: '(Ukendt titel)',
-    order: 9,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'Marcel & Soulman Group',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/marcel_%26_soulman_group.jpeg',
-    likes: 0,
-    dislikes: 0
-  },{
-    id: 10,
-    title: 'Summer Without You',
-    order: 10,
-    berlingske_review: '',
-    berlingske_rating: 0,
-    status: 'pending',
-    artist: 'World of Girls',
-    description: '',
-    country: '',
-    flag: '',
-    image: 'https://s3-eu-west-1.amazonaws.com/bem-wordpress-content/songcontests/mgp2015/world_of_girls.jpeg',
-    likes: 0,
-    dislikes: 0
-  }
-];
+  mysql.queryOne('SELECT * FROM events WHERE ident = ' + mysql.escape(ident), function (err, event) {
+    if (err) return callback (err, null);
+    if (event === null) return callback (null, null);
 
-var mgp2015 = {
-  id: 0,
-  key: 'mgp2015',
-  name: 'Melodi Grand Prix 2015',
-  description: '',
-  status: 'active',
-  date: '2015-02-07',
-  songs: songs
-};
+    var sql = [
+      'SELECT songs.*, se.play_order',
+      'FROM songs',
+      'LEFT JOIN song_event se ON se.song_id = songs.id',
+      'LEFT JOIN likes ON se.song_id = likes.song_id AND se.event_id = likes.event_id AND likes.dislike = 0',
+      'LEFT JOIN likes as dislikes ON se.song_id = dislikes.song_id AND se.event_id = dislikes.event_id AND dislikes.dislike = 1',
+      'WHERE se.event_id = ' + mysql.escape(event.id),
+      'ORDER BY se.play_order ASC'].join(' ');
 
+    mysql.query(sql, function (err, songs) {
+
+      songs.forEach(function (song, index) {
+        if (song.status === 'active') {
+          event.active_song_id = song.id;
+          event.active_song_index= index;
+        }
+      });
+
+      event.songs = songs;
+
+      callback(err, event);
+    });
+  });
+}
