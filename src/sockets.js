@@ -72,6 +72,7 @@ function getSongVotes(event_id, song_id, callback) {
     if(result) {
       result.song = song_id;
       result.event = event_id;
+      result.score = result.total === 0 ? 0 : parseInt((result.likes / result.total) * 100);
       callback(result);
     }
   });
