@@ -9,26 +9,35 @@
         console.log('nowplaying', msg);
       });
 
-      socket.emit('upvote', 1, function (msg) {
-        console.log(msg);
+      socket.on('newrating', function (msg) {
+          console.log('newrating', msg);
       });
+
+
+
     </script>
     <title>MGP 2015</title>
   </head>
   <body>
     <h1>Usage</h1>
-    <p>
       <pre>
-        var socket = io();
-        socket.emit('join', 'mgp2015');
-        socket.on('nowplaying', function (msg) {
-          console.log('nowplaying', msg);
-        });
+    var socket = io();
+    socket.emit('join', 'mgp2015');
+    socket.on('nowplaying', function (msg) {
+        console.log('nowplaying', msg);
+    });
 
-        socket.emit('upvote', 1, function (msg) {
+    socket.on('newrating', function (msg) {
+      console.log('newrating', msg);
+    });
 
-        });
+    socket.emit('like', 1, function (msg) {
+        console.log(msg);
+    });
       </pre>
-    </p>
+    <button>Upvote 1:1</button>
+    <button>Downvote 1:1</button>
+    <button>Upvote 1:2</button>
+    <button>Downvote 1:2</button>
   </body>
 </html>
