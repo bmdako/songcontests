@@ -45,9 +45,7 @@ function selectEvent(ident, callback) {
     var sql = [
       'SELECT songs.*, se.play_order',
       'FROM songs',
-      'LEFT JOIN song_event se ON se.song_id = songs.id',
-      'LEFT JOIN likes ON se.song_id = likes.song_id AND se.event_id = likes.event_id AND likes.dislike = 0',
-      'LEFT JOIN likes as dislikes ON se.song_id = dislikes.song_id AND se.event_id = dislikes.event_id AND dislikes.dislike = 1',
+      'JOIN song_event se ON se.song_id = songs.id',
       'WHERE se.event_id = ' + mysql.escape(event.id),
       'ORDER BY se.play_order ASC'].join(' ');
 
@@ -58,6 +56,14 @@ function selectEvent(ident, callback) {
           event.active_song_id = song.id;
           event.active_song_index= index;
         }
+
+        var sql = [
+          'SELECT SUM(dislike=0) AS likes, SUM(dislike=1) AS dislikes, COUNT(*) AS total',
+          'FROM likes',
+          'WHERE event_id = ' + mysql.escape(event.id) + ' AND song_id = ' + mysql.escape(song.id),
+          'GROUP BY event_id, song_id'].join(' ');
+
+        mysql.queryOne(sql, console.log)
       });
 
       event.songs = songs;
