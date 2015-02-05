@@ -1,12 +1,14 @@
 'use strict';
 
-var mysql = require('./mysql_client');
+var mysql = require('./mysql_client'),
+    checksum = require('checksum'),
+    salt = process.env.SALT;
 
 module.exports.register = function (plugin, options, next) {
 
   plugin.route({
     method: 'GET',
-    path: '/',
+    path: '/participated',
     handler: function (request, reply) {
       reply().code(501);
     },
@@ -17,17 +19,32 @@ module.exports.register = function (plugin, options, next) {
 
   plugin.route({
     method: 'GET',
+    path: '/',
+    handler: function (request, reply) {
+      mysql.query('SELECT * FROM events', function (err, events) {
+        if (err) reply().code(500);
+        else reply(events);
+      });
+    }
+  });
+
+  plugin.route({
+    method: 'GET',
     path: '/{event}',
     handler: function (request, reply) {
+      console.log('cookies', request.state);
       selectEvent(request.params.event, function (err, result) {
         if (err) reply().code(500);
         else if (result === null) reply().code(404);
         else reply(result)
-          .header('XSRF-TOKEN', 'test');
+          .state('XSRF-TOKEN', checksum('somecookievalue' + salt, { algorithm: 'sha256' }));
       });
     },
     config: {
-      cors: true
+      cors: true,
+      state: {
+        parse: true
+      }
     }
   });
 };

@@ -37,15 +37,37 @@
 </head>
 <body>
   <div class="container">
-    <div class="row">
+    <div class="row" ng-controller="EventsController">
       <div class="twelve columns">
+        <h4 id="events">Events</h4>
+        <span>
+          <button ng-click="queryEvents()">Refresh</button>
+          <label for="filterEvents">Filter</label>
+          <input class="u-full-width" type="text" placeholder="Name..." id="filterEvents" ng-model="filterEvents">
+        </span>
+        <table class="u-full-width">
+          <thead>
+            <tr>
+              <th>Ident</th>
+              <th>Navn</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="event in events | filter:filterEvents">
+              <td>{{event.ident}}</td>
+              <td>{{event.name}}</td>
+              <td><button>Edit</button></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
   <div class="container">
     <div class="row">
       <div class="twelve columns">
-        <h1>Usage</h1>
+        <h4>Usage</h4>
           <pre>
             var socket = io();
             socket.emit('join', 'mgp2015');
@@ -131,8 +153,6 @@
               newsession();
             }
           };
-
-
         </script>          
       </div>
     </div>
