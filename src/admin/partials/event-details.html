@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="row">
+    <div class="twelve columns">
+      <h4 id="events">Songs</h4>
+      <button ng-click="queryEvent()">Refresh</button>
+      <table class="u-full-width">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Likes</th>
+            <th>Dislikes</th>
+            <th>Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="song in event.songs">
+            <td>{{song.title}}</td>
+            <td>{{song.artist}}</td>
+            <td>10</td>
+            <td>2</td>
+            <td>12</td>
+            <td><button ng-click="setNowPlaying(song.id)">Now playing</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
