@@ -89,7 +89,7 @@
           upvote11.onclick = function() {
             socket.emit('like', {
               song: '1',
-              event: '1',
+              event: 'mgp2015',
               session: sessionstring.value
             });
             if (random.checked) {
@@ -99,7 +99,7 @@
           downvote11.onclick =function() {
             socket.emit('dislike', {
               song: '1',
-              event: '1',
+              event: 'mgp2015',
               session: sessionstring.value
             });
             if (random.checked) {
@@ -109,7 +109,7 @@
           upvote12.onclick = function() {
             socket.emit('like', {
               song: '2',
-              event: '1',
+              event: 'mgp2015',
               session: sessionstring.value
             });
             if (random.checked) {
@@ -119,14 +119,14 @@
           downvote12.onclick = function() {
             socket.emit('dislike', {
               song: '2',
-              event: '1',
+              event: 'mgp2015',
               session: sessionstring.value
             });
             if (random.checked) {
               newsession();
             }
           };
-        </script>          
+        </script>
       </div>
     </div>
   </div>

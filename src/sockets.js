@@ -34,6 +34,7 @@ module.exports.register = function (plugin, options, next) {
     socket.on('like', function (msg) {
       console.log('like vote', msg);
       // TODO: SQL upsert to likes
+      //castVote(msg.event, msg.song, msg.session, 0);
       castVote(msg.event, msg.song, msg.session, 0);
 
     });
@@ -41,6 +42,7 @@ module.exports.register = function (plugin, options, next) {
     socket.on('dislike', function (msg) {
       console.log('dislike vote', msg);
       // TODO: SQL upsert to dislikes
+      //castVote(msg.event, msg.song, msg.session, 1);
       castVote(msg.event, msg.song, msg.session, 1);
     });
   });
@@ -60,7 +62,7 @@ module.exports.register.attributes = {
   version: '1.0.0'
 };
 
-function getSongVotes(event_id, song_id, callback) {
+function getSongVotes(event_id, event_ident, song_id, callback) {
   var sql = [
     "SELECT SUM(dislike=0) AS likes, SUM(dislike=1) AS dislikes, COUNT(*) AS total",
     "FROM likes",
@@ -70,47 +72,53 @@ function getSongVotes(event_id, song_id, callback) {
 
   mysql.queryOne(sql, function(err, result) {
     if(result) {
-      result.song = song_id;
-      result.event = event_id;
+      result.song = parseInt(song_id);
+      result.event = event_ident;
       result.score = result.total === 0 ? 0 : parseInt((result.likes / result.total) * 100);
       callback(result);
     }
   });
 }
 
-function castVote(event_id, song_id, token, vote) {
+function isVoteable(event_ident, song_id, callback) {
   var canvotesql = [
-   ' SELECT true',
-    'FROM song_event se',
-    'JOIN events ON se.event_id = events.id AND events.status = "active"',
-    'JOIN songs ON se.song_id = songs.id AND songs.status = "active"',
-    'WHERE se.event_id =' +  mysql.escape(event_id) + ' AND se.song_id = ' + mysql.escape(song_id)
+    'SELECT e.id, e.ident FROM song_event se, events e',
+    'WHERE se.active = 1',
+    'AND se.nowplaying = 1',
+    'AND se.event_id = e.id',
+    'AND se.song_id = ', mysql.escape(song_id),
+    'AND e.ident = ', mysql.escape(event_ident)
   ].join(' ');
-
   mysql.queryOne(canvotesql, function(err, result) {
-    if (!result) {
-      return;
-    }
+    callback(result);
+  });
+}
 
-    var sql = [
-      'INSERT INTO likes (event_id, song_id, token, dislike)',
-      'VALUES (',
-      [mysql.escape(event_id), mysql.escape(song_id), mysql.escape(token), mysql.escape(vote)].join(','),
-      ')',
-      'ON DUPLICATE KEY UPDATE',
-      'dislike = ', mysql.escape(vote)
-    ].join(' ');
+function castVote(event_ident, song_id, token, vote) {
+  isVoteable(event_ident, song_id, function(result) {
+    if(result) {
 
-    mysql.query(sql, function(err, result) {
-      if(!result) {
-        return;
-      }
+      var event = result;
+      var sql = [
+        'INSERT INTO likes (event_id, song_id, token, dislike)',
+        'VALUES (',
+        [mysql.escape(event.id), mysql.escape(song_id), mysql.escape(token), mysql.escape(vote)].join(','),
+        ')',
+        'ON DUPLICATE KEY UPDATE',
+        'dislike = ', mysql.escape(vote)
+      ].join(' ');
 
-      getSongVotes(event_id,song_id, function(msg) {
-        if(msg) {
-          io.sockets.to('mgp2015').emit('newrating', msg);
+      mysql.query(sql, function(err, result) {
+        if(result) {
+          getSongVotes(event.id, event.ident, song_id, function(msg) {
+            if(msg) {
+              io.sockets.to('mgp2015').emit('newrating', msg);
+            }
+          });
         }
       });
-    });
+    } else {
+      console.log('invalid', result);
+    }
   });
 }
