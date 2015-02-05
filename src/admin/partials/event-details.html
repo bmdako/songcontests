@@ -36,7 +36,7 @@
             <td>{{song.likes}}</td>
             <td>{{song.dislikes}}</td>
             <td>{{song.total}}</td>
-            <td><button ng-click="setNowPlaying(song.id)">Now playing</button></td>
+            <td><button ng-click="setNowPlaying(song.id)" ng-class="(song.nowplaying===1) ? 'button-primary' : ''">Now playing</button></td>
             <td><button click="">Like</button></td>
             <td><button click="">Dislike</button></td>
           </tr>

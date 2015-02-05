@@ -1,4 +1,7 @@
-var songcontestsAdminApp = angular.module('songcontestsAdminApp', ['ngRoute', 'ngResource']);
+var songcontestsAdminApp = angular.module('songcontestsAdminApp', ['ngRoute', 'ngResource', 'btford.socket-io']).
+  factory('socket', function (socketFactory) {
+    return socketFactory();
+  });
 
 songcontestsAdminApp.config(['$routeProvider',
   function($routeProvider) {
@@ -27,7 +30,22 @@ songcontestsAdminApp.controller('EventsController', function ($scope, $resource,
   $scope.queryEvents();
 });
 
-songcontestsAdminApp.controller('EventController', function ($scope, $resource, $http, $routeParams) {
+songcontestsAdminApp.controller('EventController', function ($scope, $resource, $http, $routeParams, socket) {
+
+
+
+  socket.forward('nowplaying', $scope);
+
+  $scope.$on('socket:nowplaying', function (ev, data) {
+    $scope.event.songs.forEach(function (el, idx, arr) {
+        if(el.id === data.song) {
+          el.nowplaying = 1;
+        } else {
+          el.nowplaying = 0;
+        }
+    });
+  });
+
   var Events = $resource('/events/:ident', { ident: '@ident' });
 
   $scope.getEvent = function () {
