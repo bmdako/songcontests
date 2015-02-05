@@ -25,14 +25,6 @@ server.register(sockets, function (err) {
 
 server.route({
   method: 'GET',
-  path: '/',
-  handler: {
-     file: Path.join(__dirname, 'index.html')
-   }
-});
-
-server.route({
-  method: 'GET',
   path: '/admin/{param*}',
   handler: {
     directory: {

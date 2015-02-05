@@ -22,7 +22,8 @@ module.exports.register = function (plugin, options, next) {
       selectEvent(request.params.event, function (err, result) {
         if (err) reply().code(500);
         else if (result === null) reply().code(404);
-        else reply(result);
+        else reply(result)
+          .header('XSRF-TOKEN', 'test');
       });
     },
     config: {
@@ -43,7 +44,7 @@ function selectEvent(ident, callback) {
     if (event === null) return callback (null, null);
 
     var sql = [
-      'SELECT songs.*, se.play_order, likes.likes, likes.dislikes, likes.total',
+      'SELECT songs.*, se.play_order, se.active, se.nowplaying, likes.likes, likes.dislikes, likes.total',
       'FROM songs',
       'JOIN song_event se ON se.song_id = songs.id',
       'LEFT JOIN (SELECT song_id, SUM(dislike=0) AS likes, SUM(dislike=1) AS dislikes, count(*) AS total FROM likes WHERE event_id = ' + mysql.escape(event.id) + ' GROUP BY event_id, song_id) AS likes ON likes.song_id = songs.id',
@@ -53,9 +54,9 @@ function selectEvent(ident, callback) {
     mysql.query(sql, function (err, songs) {
 
       songs.forEach(function (song, index) {
-        if (song.status === 'active') {
-          event.active_song_id = song.id;
-          event.active_song_index= index;
+        if (song.nowplaying === 1) {
+          event.nowplaying_id = song.id;
+          event.nowplaying_index = index;
         }
 
         song.likes = song.likes === null ? 0 : song.likes;
