@@ -12,16 +12,20 @@
             <th>Dislikes</th>
             <th>Total</th>
             <th></th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="song in event.songs">
             <td>{{song.title}}</td>
             <td>{{song.artist}}</td>
-            <td>10</td>
-            <td>2</td>
-            <td>12</td>
+            <td>{{song.likes}}</td>
+            <td>{{song.dislikes}}</td>
+            <td>{{song.total}}</td>
             <td><button ng-click="setNowPlaying(song.id)">Now playing</button></td>
+            <td><button click="">Like</button></td>
+            <td><button click="">Dislike</button></td>
           </tr>
         </tbody>
       </table>
