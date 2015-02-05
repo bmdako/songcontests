@@ -1,13 +1,25 @@
 <div class="container">
   <div class="row">
     <div class="twelve columns">
-      <h4 id="events">Songs</h4>
-      <button ng-click="queryEvent()">Refresh</button>
+      <h4 id="events">Songs in {{event.name}}</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="twelve columns">
+      <span>
+        <button ng-click="queryEvent()">Refresh songlist</button>
+        <button click="">All songs open for voting</button>
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="twelve columns">
       <table class="u-full-width">
         <thead>
           <tr>
             <th>Title</th>
             <th>Artist</th>
+            <th>Order</th>
             <th>Likes</th>
             <th>Dislikes</th>
             <th>Total</th>
@@ -20,6 +32,7 @@
           <tr ng-repeat="song in event.songs">
             <td>{{song.title}}</td>
             <td>{{song.artist}}</td>
+            <td><input type="number" ng-model="song.play_order" ng-change="" max="100" min="1" /></td>
             <td>{{song.likes}}</td>
             <td>{{song.dislikes}}</td>
             <td>{{song.total}}</td>

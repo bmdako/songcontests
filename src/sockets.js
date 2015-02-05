@@ -51,6 +51,7 @@ module.exports.register = function (plugin, options, next) {
     method: 'POST',
     path: '/{name}',
     handler: function (request, reply) {
+      // TODO: Set nowplaying in song_event table
       io.sockets.to(request.params.name).emit('nowplaying', request.payload);
       reply();
     }
