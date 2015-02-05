@@ -37,8 +37,8 @@
             <td>{{song.dislikes}}</td>
             <td>{{song.total}}</td>
             <td><button ng-click="setNowPlaying(song.id)" ng-class="(song.nowplaying===1) ? 'button-primary' : ''">Now playing</button></td>
-            <td><button click="">Like</button></td>
-            <td><button click="">Dislike</button></td>
+            <td><button ng-click="like(song.id)" ng-disabled="!song.active">Like</button></td>
+            <td><button ng-click="dislike(song.id)" ng-disabled="!song.active">Dislike</button></td>
           </tr>
         </tbody>
       </table>
