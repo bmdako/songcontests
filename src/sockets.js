@@ -3,9 +3,7 @@
 var mysql = require('./mysql_client'),
   SocketIO = require('socket.io'),
   io,
-  connections = 0,
-  likes = 0,
-  dislikes = 0;
+  connections = 0;
 
 
 module.exports.register = function (plugin, options, next) {
@@ -13,36 +11,32 @@ module.exports.register = function (plugin, options, next) {
   io = SocketIO.listen(plugin.listener);
 
   io.sockets.on('connection', function (socket) {
-    console.log('New connection. Connection count:', connections);
     ++connections;
+    console.log('New connection. Overall connection count:', connections);
 
     socket.on('disconnect', function () {
-      console.log('user disconnected');
       --connections;
+      console.log('User disconnected. Overall connection count:', connections);
     });
 
     socket.on('join', function (room) {
-      console.log('join', room);
       socket.join(room);
+      console.log('User joining', room);
     });
 
     socket.on('leave', function (room) {
-      console.log('leave', room);
       socket.leave(room);
+      console.log('User leaving', room);
     });
 
     socket.on('like', function (msg) {
       console.log('like vote', msg);
-      // TODO: SQL upsert to likes
-      //castVote(msg.event, msg.song, msg.session, 0);
       castVote(msg.event, msg.song, msg.session, 0);
 
     });
 
     socket.on('dislike', function (msg) {
       console.log('dislike vote', msg);
-      // TODO: SQL upsert to dislikes
-      //castVote(msg.event, msg.song, msg.session, 1);
       castVote(msg.event, msg.song, msg.session, 1);
     });
   });
@@ -157,31 +151,38 @@ function setActiveSongs (message, callback) {
       return callback({error: 'Song missing from message.'});
     }
 
-    console.log('Setting nowplaying for song ' + message.song + " in event " + message.event);
+    console.log('Setting nowplaying and active for song ' + message.song + " in event " + message.event);
 
-    mysql.getConnection(function (err, connection) {
-      connection.beginTransaction(function (err) {
-        if (err) return callback(err, null);
+    // mysql.getConnection(function (err, connection) {
+    //   connection.beginTransaction(function (err) {
+    //     if (err) return callback(err, null);
 
-        connection.query("UPDATE song_event SET active = 0, nowplaying = 0 WHERE event_id = (SELECT id FROM events WHERE ident=" + mysql.escape(message.event) + ") AND song_id != " + mysql.escape(message.song), function (err, result) {
-          if (err) {
-            connection.rollback(function () {
-              callback(err, null);
-            });
-          } else {
+    //     connection.query("UPDATE song_event SET nowplaying = 0 WHERE event_id = (SELECT id FROM events WHERE ident=" + mysql.escape(message.event) + ") AND song_id != " + mysql.escape(message.song), function (err, result) {
+    //       if (err) {
+    //         connection.rollback(function () {
+    //           callback(err, null);
+    //         });
+    //       } else {
 
-            connection.query("UPDATE song_event SET active = 1, nowplaying = 1 WHERE event_id = (SELECT id FROM events WHERE ident=" + mysql.escape(message.event) + ") AND song_id = " + mysql.escape(message.song), function (err, result) {
-              if (err) {
-                connection.rollback(function () {
-                  callback(err, null);
-                });
-              } else {
-                connection.commit(callback);
-              }
-            });
-          }
-        });
-      });
+    //         connection.query("UPDATE song_event SET active = 1, nowplaying = 1 WHERE event_id = (SELECT id FROM events WHERE ident=" + mysql.escape(message.event) + ") AND song_id = " + mysql.escape(message.song), function (err, result) {
+    //           if (err) {
+    //             connection.rollback(function () {
+    //               callback(err, null);
+    //             });
+    //           } else {
+    //             connection.commit(callback);
+    //           }
+    //         });
+    //       }
+    //     });
+    //   });
+    // });
+
+
+    mysql.query("UPDATE song_event SET nowplaying = 0 WHERE event_id = (SELECT id FROM events WHERE ident=" + mysql.escape(message.event) + ") AND song_id != " + mysql.escape(message.song), function (err, result) {
+      if (err) return callback(err, null);
+
+      mysql.query("UPDATE song_event SET active = 1, nowplaying = 1 WHERE event_id = (SELECT id FROM events WHERE ident=" + mysql.escape(message.event) + ") AND song_id = " + mysql.escape(message.song), callback);
     });
   }
 }

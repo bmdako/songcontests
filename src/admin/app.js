@@ -32,9 +32,14 @@ songcontestsAdminApp.controller('EventsController', function ($scope, $resource,
 
 songcontestsAdminApp.controller('EventController', function ($scope, $resource, $http, $routeParams, socket) {
 
-  var theroom = $routeParams.ident
+  var theroom = $routeParams.ident;
 
   socket.emit('join', theroom);
+
+  // Re-joining room if the server was re-started.
+  socket.on('connect', function () {
+    socket.emit('join', theroom);
+  });
 
   var Events = $resource('/events/:ident', { ident: '@ident' });
 
@@ -89,12 +94,14 @@ songcontestsAdminApp.controller('EventController', function ($scope, $resource, 
       if (data.active_all) {
         el.active     = 1;
         el.nowplaying = 0;
+      } else if (data.active === false) {
+        el.nowplaying = 0;
+        el.active     = 0;
       } else if (el.id === data.song) {
         el.nowplaying = 1;
         el.active     = 1;
       } else {
         el.nowplaying = 0;
-        el.active     = 0;
       }
     });
   });
