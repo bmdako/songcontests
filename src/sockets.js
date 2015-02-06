@@ -51,9 +51,12 @@ module.exports.register = function (plugin, options, next) {
     method: 'POST',
     path: '/{name}',
     handler: function (request, reply) {
-      // TODO: Set nowplaying in song_event table
-      io.sockets.to(request.params.name).emit('nowplaying', request.payload);
-      reply();
+      setActiveSongs(request.payload, function (err) {
+        if (err) return reply().code(500);
+
+        io.sockets.to(request.params.name).emit('nowplaying', request.payload);
+        reply();
+      });
     }
   });
 };
@@ -122,4 +125,13 @@ function castVote(event_ident, song_id, token, vote) {
       console.log('invalid', result);
     }
   });
+}
+
+function setActiveSongs (payload, callback) {
+  if (payload.active_all) {
+
+  } else {
+    
+  }
+  callback();
 }

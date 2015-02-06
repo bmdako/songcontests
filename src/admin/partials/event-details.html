@@ -9,7 +9,8 @@
       <span>
         <a class="button" ng-href="#/">Back</a>
         <button ng-click="getEvent()">Refresh songlist</button>
-        <button click="setAllActive()">All songs open for voting</button>
+        <button ng-click="setAllActive()" ng-class="(event.active_all===true) ? 'button-primary' : ''">All songs open for voting</button>
+        <button ng-click="setAllInactive()" ng-class="(event.active===false) ? 'button-primary' : ''">Event stopped</button>
       </span>
     </div>
   </div>

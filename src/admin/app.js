@@ -52,6 +52,10 @@ songcontestsAdminApp.controller('EventController', function ($scope, $resource, 
     $http.post('/' + $routeParams.ident, {active_all: true, event: $routeParams.ident});
   };
 
+  $scope.setAllInactive = function () {
+    $http.post('/' + $routeParams.ident, {active: false, event: $routeParams.ident});
+  };
+
   $scope.like = function(song_id) {
     console.log('like ' + song_id);
     var obj =
@@ -77,8 +81,14 @@ songcontestsAdminApp.controller('EventController', function ($scope, $resource, 
 
   $scope.$on('socket:nowplaying', function (ev, data) {
     console.log(data);
+
+    $scope.event.active = data.active;
+    $scope.event.active_all = data.active_all;
+
     $scope.event.songs.forEach(function (el, idx, arr) {
-      if(el.id === data.song) {
+      if (data.active_all) {
+        el.active     = 1;
+      } else if (el.id === data.song) {
         el.nowplaying = 1;
         el.active     = 1;
       } else {
