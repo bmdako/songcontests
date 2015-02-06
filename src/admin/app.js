@@ -88,6 +88,7 @@ songcontestsAdminApp.controller('EventController', function ($scope, $resource, 
     $scope.event.songs.forEach(function (el, idx, arr) {
       if (data.active_all) {
         el.active     = 1;
+        el.nowplaying = 0;
       } else if (el.id === data.song) {
         el.nowplaying = 1;
         el.active     = 1;
