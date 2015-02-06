@@ -46,6 +46,9 @@ songcontestsAdminApp.controller('EventController', function ($scope, $resource, 
     $http.post('/' + $routeParams.ident, {song: song_id, event: $routeParams.ident});
   };
 
+  $scope.setAllActive = function () {
+    $http.post('/' + $routeParams.ident, {active_all: true, event: $routeParams.ident});
+  };
 
   $scope.like = function(song_id) {
     console.log('like ' + song_id);
