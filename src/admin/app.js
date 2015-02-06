@@ -32,7 +32,7 @@ songcontestsAdminApp.controller('EventsController', function ($scope, $resource,
 
 songcontestsAdminApp.controller('EventController', function ($scope, $resource, $http, $routeParams, socket) {
 
-  socket.emit('join', 'mgp2015');
+  socket.emit('join', $routeParams.ident);
 
   var Events = $resource('/events/:ident', { ident: '@ident' });
 
@@ -102,7 +102,7 @@ songcontestsAdminApp.controller('EventController', function ($scope, $resource, 
   /* Leaving */
 
   $scope.$on("$destroy", function(){
-    socket.emit('leave', 'mgp2015');
+    socket.emit('leave', $routeParams.ident);
   });
 
 });
