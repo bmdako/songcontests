@@ -69,9 +69,8 @@ function selectEvent(ident, callback) {
       'ORDER BY se.play_order ASC'].join(' ');
 
     mysql.query(sql, function (err, songs) {
-
       event.active = songs.some(function (song) { return song.active === 1; });
-      event.active_all = songs.every(function (song) { return song.active === 1; });
+      event.active_all = songs.length > 0 ? songs.every(function (song) { return song.active === 1; }) : false;
 
       songs.forEach(function (song, index) {
         if (song.nowplaying === 1) {

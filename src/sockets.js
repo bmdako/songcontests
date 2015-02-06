@@ -91,7 +91,6 @@ function isVoteable(event_ident, song_id, callback) {
   var canvotesql = [
     'SELECT e.id, e.ident FROM song_event se, events e',
     'WHERE se.active = 1',
-    'AND se.nowplaying = 1',
     'AND se.event_id = e.id',
     'AND se.song_id = ', mysql.escape(song_id),
     'AND e.ident = ', mysql.escape(event_ident)
@@ -125,7 +124,7 @@ function castVote(event_ident, song_id, token, vote) {
         }
       });
     } else {
-      console.log('invalid', result);
+      console.log('isVoteable returned an error', result);
     }
   });
 }
