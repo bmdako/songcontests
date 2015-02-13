@@ -26,21 +26,18 @@
             <th>Dislikes</th>
             <th>Total</th>
             <th></th>
-            <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="song in event.songs">
             <td>{{song.title}}</td>
             <td>{{song.artist}}</td>
-            <td><input type="number" ng-model="song.play_order" ng-change="" max="100" min="1" /></td>
+            <!-- <td><input type="number" ng-model="song.play_order" ng-change="" max="100" min="1" /></td> -->
+            <td>{{song.play_order}}</td>
             <td>{{song.likes}}</td>
             <td>{{song.dislikes}}</td>
             <td>{{song.total}}</td>
             <td><button ng-click="setNowPlaying(song.id)" ng-class="(song.nowplaying===1) ? 'button-primary' : ''">Now playing</button></td>
-            <td><button ng-click="like(song.id)" ng-disabled="!song.active">Like</button></td>
-            <td><button ng-click="dislike(song.id)" ng-disabled="!song.active">Dislike</button></td>
           </tr>
         </tbody>
       </table>

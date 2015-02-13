@@ -21,22 +21,22 @@ module.exports.register = function (plugin, options, next) {
 
     socket.on('join', function (room) {
       socket.join(room);
-      console.log('User joining', room);
+      // console.log('User joining', room);
     });
 
     socket.on('leave', function (room) {
       socket.leave(room);
-      console.log('User leaving', room);
+      // console.log('User leaving', room);
     });
 
     socket.on('like', function (msg) {
-      console.log('like vote', msg);
+      // console.log('like vote', msg);
       castVote(msg.event, msg.song, msg.session, 0);
 
     });
 
     socket.on('dislike', function (msg) {
-      console.log('dislike vote', msg);
+      // console.log('dislike vote', msg);
       castVote(msg.event, msg.song, msg.session, 1);
     });
   });

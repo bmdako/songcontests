@@ -61,24 +61,24 @@ songcontestsAdminApp.controller('EventController', function ($scope, $resource, 
     $http.post('/' + $routeParams.ident, {active: false, event: $routeParams.ident});
   };
 
-  $scope.like = function(song_id) {
-    console.log('like ' + song_id);
-    var obj =
-    socket.emit('like', {
-      song: song_id,
-      event: $scope.event.ident,
-      session: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10)
-    });
-  };
+  // $scope.like = function(song_id) {
+  //   console.log('like ' + song_id);
+  //   var obj =
+  //   socket.emit('like', {
+  //     song: song_id,
+  //     event: $scope.event.ident,
+  //     session: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10)
+  //   });
+  // };
 
-  $scope.dislike = function(song_id) {
-    console.log('dislike ' + song_id);
-    socket.emit('dislike', {
-      song: song_id,
-      event: $scope.event.ident,
-      session: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10)
-    });
-  };
+  // $scope.dislike = function(song_id) {
+  //   console.log('dislike ' + song_id);
+  //   socket.emit('dislike', {
+  //     song: song_id,
+  //     event: $scope.event.ident,
+  //     session: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 10)
+  //   });
+  // };
 
   /* SOCKET BINDINGS */
 

@@ -32,7 +32,7 @@ module.exports.register = function (plugin, options, next) {
     method: 'GET',
     path: '/{event}',
     handler: function (request, reply) {
-      console.log('cookies', request.state);
+      //console.log('cookies', request.state);
       selectEvent(request.params.event, function (err, result) {
         if (err) reply().code(500);
         else if (result === null) reply().code(404);
