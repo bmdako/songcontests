@@ -112,7 +112,7 @@ function castVote(event_ident, song_id, token, vote) {
         if(result) {
           getSongVotes(event.id, event.ident, song_id, function(msg) {
             if(msg) {
-              io.sockets.to('mgp2015').emit('newrating', msg);
+              io.sockets.to(event_ident).emit('newrating', msg);
             }
           });
         }
