@@ -14,7 +14,7 @@ RUN wget -O - http://nodejs.org/dist/v0.10.29/node-v0.10.29-linux-x64.tar.gz \
 # Set the working directory.
 WORKDIR /songcontests
 
-# Copying the code into image. Be aware no config files are including.
+# Copying the code into image. Be aware no config files are included.
 COPY ./src /songcontests/src
 COPY ./node_modules /songcontests/node_modules
 
